@@ -42,18 +42,36 @@ SELECT last_name, COUNT(*)
 FROM actor
 GROUP BY 1;
 
-4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
+-- 4b. List last names of actors and the number of actors who have that last name, but only for names that are shared by at least two actors
+SELECT last_name, COUNT(*)
+FROM actor
+GROUP BY 1
+HAVING COUNT(*)>=2;
 
-4c. The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS. Write a query to fix the record.
+-- 4c. The actor HARPO WILLIAMS was accidentally entered in the actor table as GROUCHO WILLIAMS. Write a query to fix the record.
+SET SQL_SAFE_UPDATES = 0;
+UPDATE actor
+SET first_name = "HARPO"
+WHERE first_name = "GROUCHO" and last_name="WILLIAMS";
 
-4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO.
+-- 4d. Perhaps we were too hasty in changing GROUCHO to HARPO. It turns out that GROUCHO was the correct name after all! In a single query, if the first name of the actor is currently HARPO, change it to GROUCHO.
+UPDATE actor
+SET first_name = "GROUCHO"
+WHERE first_name = "HARPO" and last_name="WILLIAMS";
 
-5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
+-- 5a. You cannot locate the schema of the address table. Which query would you use to re-create it?
+SHOW CREATE TABLE address;
 
-Hint: https://dev.mysql.com/doc/refman/5.7/en/show-create-table.html
-6a. Use JOIN to display the first and last names, as well as the address, of each staff member. Use the tables staff and address:
+-- 6a. Use JOIN to display the first and last names, as well as the address, of each staff member. Use the tables staff and address:
+SELECT staff.first_name, staff.last_name, address.address
+FROM staff
+JOIN address ON address.address_id = staff.address_id;
 
-6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use tables staff and payment.
+-- 6b. Use JOIN to display the total amount rung up by each staff member in August of 2005. Use tables staff and payment.
+SELECT s.first_name, s.last_name, SUM(p.amount)
+FROM staff s 
+JOIN payment p ON p.staff_id = s.staff_id
+GROUP BY 1;
 
 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join.
 

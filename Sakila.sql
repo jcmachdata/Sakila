@@ -73,17 +73,30 @@ FROM staff s
 JOIN payment p ON p.staff_id = s.staff_id
 GROUP BY 1;
 
-6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join.
+-- 6c. List each film and the number of actors who are listed for that film. Use tables film_actor and film. Use inner join.
+SELECT f.title, COUNT(a.actor_id)
+FROM film f
+INNER JOIN film_actor a ON a.film_id = f.film_id
+GROUP BY 1;
 
-6d. How many copies of the film Hunchback Impossible exist in the inventory system?
+-- 6d. How many copies of the film Hunchback Impossible exist in the inventory system?
+SELECT f.title, COUNT(i.film_id)
+FROM film f
+JOIN inventory i ON i.film_id = f.film_id
+WHERE f.title = "Hunchback Impossible";
 
-6e. Using the tables payment and customer and the JOIN command, list the total paid by each customer. List the customers alphabetically by last name:
+-- 6e. Using the tables payment and customer and the JOIN command, list the total paid by each customer. List the customers alphabetically by last name:
+SELECT c.first_name, c.last_name, SUM(p.amount)
+FROM customer c
+JOIN payment p ON p.customer_id = c.customer_id
+GROUP BY 2;
 
-Total amount paid
+-- 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters K and Q have also soared in popularity. Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.
+SELECT f.title
+FROM film f
+WHERE f.title LIKE "Q%" OR f.title LIKE "K%" AND language_id = (SELECT language_id FROM language WHERE name = "English");
 
-7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters K and Q have also soared in popularity. Use subqueries to display the titles of movies starting with the letters K and Q whose language is English.
-
-7b. Use subqueries to display all actors who appear in the film Alone Trip.
+-- 7b. Use subqueries to display all actors who appear in the film Alone Trip.
 
 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
 

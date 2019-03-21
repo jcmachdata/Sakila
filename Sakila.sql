@@ -103,17 +103,40 @@ FROM actor a WHERE a.actor_id IN
     (SELECT film_id FROM film f WHERE f.title = "Alone Trip"));
 
 
-7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
+-- 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
+SELECT c.first_name, c.last_name, c.email
+FROM customer c
+JOIN address a ON a.address_id = c.address_id
+JOIN city ct ON ct.city_id = a.city_id
+JOIN country cy ON cy.country_id = ct.country_id WHERE cy.country = "Canada";
 
-7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as family films.
+-- 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as family films.
+SELECT f.title
+FROM film f
+JOIN film_category fc ON fc.film_id = f.film_id
+JOIN category c ON c.category_id = fc.category_id WHERE c.name = "Family";
 
-7e. Display the most frequently rented movies in descending order.
+-- 7e. Display the most frequently rented movies in descending order.
+SELECT f.title, COUNT(r.rental_id) as "Total Rentals"
+FROM film f
+JOIN inventory i ON i.film_id = f.film_id
+JOIN rental r ON r.inventory_id = i.inventory_id
+GROUP BY 1
+ORDER BY 2 DESC;
 
-7f. Write a query to display how much business, in dollars, each store brought in.
+-- 7f. Write a query to display how much business, in dollars, each store brought in.
+SELECT i.store_id as "Store #", sum(p.amount) as "Revenue"
+FROM film f, payment p, inventory i, rental r
+WHERE p.rental_id = r.rental_id AND i.film_id = f.film_id AND r.inventory_id = i.inventory_id
+GROUP BY 1;
 
-7g. Write a query to display for each store its store ID, city, and country.
+-- 7g. Write a query to display for each store its store ID, city, and country.
+SELECT s.store_id, a.address, c.country
+FROM store s, address a, country c, city cy
+WHERE s.address_id = a.address_id AND a.city_id = cy.city_id AND c.country_id = cy.country_id;
 
 7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+
 
 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
 

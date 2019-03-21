@@ -97,6 +97,11 @@ FROM film f
 WHERE f.title LIKE "Q%" OR f.title LIKE "K%" AND language_id = (SELECT language_id FROM language WHERE name = "English");
 
 -- 7b. Use subqueries to display all actors who appear in the film Alone Trip.
+SELECT first_name, last_name
+FROM actor a WHERE a.actor_id IN
+	(SELECT actor_id FROM film_actor fa WHERE fa.film_id IN
+    (SELECT film_id FROM film f WHERE f.title = "Alone Trip"));
+
 
 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
 

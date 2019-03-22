@@ -135,11 +135,32 @@ SELECT s.store_id, a.address, c.country
 FROM store s, address a, country c, city cy
 WHERE s.address_id = a.address_id AND a.city_id = cy.city_id AND c.country_id = cy.country_id;
 
-7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+-- 7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+SELECT c.name, SUM(p.amount)
+FROM category c
+JOIN film_category fc ON fc.category_id = c.category_id
+JOIN inventory i ON i.film_id = fc.film_id
+JOIN rental r ON r.inventory_id = i.inventory_id
+JOIN payment p ON p.rental_id = r.rental_id
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 5;
 
+-- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+CREATE VIEW top_five_genres AS
+	SELECT c.name, SUM(p.amount)
+	FROM category c
+	JOIN film_category fc ON fc.category_id = c.category_id
+	JOIN inventory i ON i.film_id = fc.film_id
+	JOIN rental r ON r.inventory_id = i.inventory_id
+	JOIN payment p ON p.rental_id = r.rental_id
+	GROUP BY 1
+	ORDER BY 2 DESC
+	LIMIT 5;
 
-8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+-- 8b. How would you display the view that you created in 8a?
+SELECT *
+FROM top_five_genres;
 
-8b. How would you display the view that you created in 8a?
-
-8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
+-- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
+DROP VIEW top_five_genres;
